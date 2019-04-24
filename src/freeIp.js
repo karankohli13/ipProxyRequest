@@ -2,7 +2,7 @@ const rp = require('./requestPromise')
 const cheerio = require('cheerio')
 const { sleep } = require('./utils')
 
-async function getUsefulProxy () {
+async function getUsefulProxy() {
   let proxyList = []
   let usefulProxyList = []
   let count = 0
@@ -26,15 +26,14 @@ async function getUsefulProxy () {
   return Promise.resolve(usefulProxyList)
 }
 
-/**
- * 获取www.xicidaili.com提供的免费代理
- */
-function getProxyList () {
-  const url = 'https://proxy.l337.tech/txt' // 国内高匿代理
+
+function getProxyList() {
+
+  const url = ['http://multiproxy.org/txt_all/proxy.txt', 'https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list.txt']
   let proxys = []
   return new Promise((resolve, reject) => {
     rp({
-      url: url,
+      url: url[~~(url.length * Math.random())],
       method: 'GET',
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36',
@@ -42,16 +41,22 @@ function getProxyList () {
       timeout: 20000
     }).then(res => {
       const { body } = res.response;
-      const proxyList = body.split('\n').filter(item => item);
-      const proxys = proxyList.map(item => {
-        const proxy = item.split(':')
-        return {
-          ip: proxy[0],
-          port: proxy[1]
-        }
-      })
-      console.log(proxys)
-      resolve(proxys)
+      console.log(res.response.headers['content-type'])
+      if (res.response.headers['content-type'].includes('text/plain')) {
+        const proxyList = body.split('\n').filter(item => item);
+        let proxys = [];
+        proxyList.forEach(item => {
+          let proxy = item.match(/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(?:\s+|\s*:\s*)(\d{2,5})?/);
+          if (proxy && proxy.length > 0) {
+            proxy = proxy[0].split(':');
+            proxys.push({
+              ip: proxy[0],
+              port: proxy[1]
+            })
+          } else return;
+        })
+        resolve(proxys)
+      } else resolve([])
     }).catch(err => {
       console.log(err)
       resolve([])
@@ -59,15 +64,15 @@ function getProxyList () {
   })
 }
 
-function checkProxy (proxy) {
-  // 尝试请求百度的静态资源公共库中的jquery文件
+
+function checkProxy(proxy) {
   const url = 'http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js'
   return new Promise((resolve) => {
     rp({
       url: url,
       method: 'GET',
       proxy: 'http://' + proxy['ip'] + ':' + proxy['port'],
-      timeout: 20000 // 20s没有返回则视为代理不行
+      timeout: 20000
     }).then(({ response }) => {
       if (response.statusCode === 200) {
         resolve(proxy)
@@ -80,10 +85,9 @@ function checkProxy (proxy) {
     })
   })
 }
-/**
- * 过滤无效的代理
- */
-function check (proxys) {
+
+
+function check(proxys) {
   return new Promise((resolve, reject) => {
     const requestArr = []
     for (var i = 0; i < proxys.length; i++) {

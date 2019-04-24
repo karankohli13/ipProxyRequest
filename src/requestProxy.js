@@ -34,7 +34,7 @@ const ipProxyHttp = {
       timeout: 20000
     }
     const mergedOpts = mergeOptions(defaultOptions, options)
-    
+
     return new Promise((resolve, reject) => {
       rp(mergedOpts)
       .then(res => {
@@ -46,7 +46,7 @@ const ipProxyHttp = {
         if (duration > timeout) {
           reject(new Error('timeout'))
         } else {
-          console.log(`http://${ipProxy['host']}:${ipProxy['port']}代理请求失败，休息1s后换ip重试...`)
+          console.log(`http://${ipProxy['host']}:${ipProxy['port']}`)
           await sleep(1000)
           resolve(this.send(options, true))
         }

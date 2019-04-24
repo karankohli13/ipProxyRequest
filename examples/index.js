@@ -23,7 +23,6 @@ async function test() {
       console.error(error)
     }
   }
-  console.log('爬取完毕')
 }
 
 test()

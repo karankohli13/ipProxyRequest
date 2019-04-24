@@ -1,16 +1,16 @@
 {
   "name": "ip-proxy-request",
   "version": "1.0.2",
-  "description": "nodejs 免费ip代理发送请求",
+  "description": "nodejs request with proxy",
   "main": "index.js",
-  "author": "cky <576779975@qq.com>",
+  "author": "karan <karankohli13@gmail.com>",
   "license": "MIT",
   "scripts": {
     "test": "jest"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/cky917/ipProxyRequest.git"
+    "url": "https://github.com/karankohli13/ipProxyRequest.git"
   },
   "keywords": [
     "nodejs",
@@ -18,13 +18,14 @@
     "ip"
   ],
   "bugs": {
-    "url": "https://github.com/cky917/ipProxyRequest/issues"
+    "url": "https://github.com/karankohli13/ipProxyRequest/issues"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
-    "request": "git+https://github.com/cky917/request.git"
+    "proxy-lists": "^1.16.0",
+    "request": "git+https://github.com/karankohli13/request.git"
   },
   "devDependencies": {
-    "jest": "^22.4.3"
+    "jest": "^24.7.1"
   }
 }
